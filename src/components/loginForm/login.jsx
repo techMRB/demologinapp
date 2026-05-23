@@ -1,5 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 // import { Form, Button, Container, Row, Col } from "react-bootstrap";
 import "./login.css";
 
@@ -9,6 +10,7 @@ const LoginForm = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
+  const navigate = useNavigate();
   return (
     <div className="login-container">
       <div className="login-form">
@@ -53,8 +55,11 @@ const LoginForm = () => {
             )}
           </div>
           <div className="button-group">
-            <button type="submit" className="submit-button">
-              Login
+            <button type="submit" className="submit-button">Login</button>
+          </div>
+          <div className="button-group" style={{ marginTop: "0.75rem" }}>
+            <button type="button" className="back-button" onClick={() => navigate("/register")}>
+              Create an Account
             </button>
           </div>
         </form>
