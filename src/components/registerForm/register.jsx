@@ -18,8 +18,9 @@ const RegisterForm = () => {
     try {
       const response = await axios.post(APIEndpoint.REGISTER, data);
       if (response.status === 201) {
-        alert("Registration successful! Please log in.");
-        navigate("/");
+        alert(
+          "Registration successful! Please check your email to verify your account.",
+        );
       }
     } catch (error) {
       console.error("Registration failed:", error);

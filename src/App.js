@@ -4,6 +4,8 @@ import './App.css';
 
 import Login from './components/loginForm/login';
 import Register from './components/registerForm/register';
+import EmailVerification from './components/emailVerification/EmailVerification';
+import Dashboard from './components/dashboard/Dashboard';
 
 const App = () => {
   return (
@@ -11,6 +13,8 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/verify-email/:token" element={<EmailVerification />} />
+        <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
     </Router>
   )
