@@ -10,7 +10,7 @@ import "./login.css";
 const LoginForm = () => {
   const [accessToken, setAccessToken] = useState(null);
   const [user, setUser] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const {
     register,
     handleSubmit,
@@ -19,7 +19,7 @@ const LoginForm = () => {
   } = useForm();
   const navigate = useNavigate();
 
-  const onFormSubmit = async (data) => {
+  const onSubmit = async (data) => {
     try {
       const response = await axios.post(APIEndpoint.LOGIN_URL, data, {
         headers: {
@@ -27,36 +27,31 @@ const LoginForm = () => {
         },
         withCredentials: true,
       });
-      setIsLoading(true);
-      console.log("response", response.data);
+      setLoading(true);
+      console.log("Login response:", response.data);
+      console.log("Login response:", response);
       if (response.status === 200) {
         reset();
-        setIsLoading(false);
+        setLoading(false);
         setAccessToken(response.data.accessToken);
         setUser(response.data.user);
-        toast.success("Login successful!");
         navigate("/dashboard");
       } else {
-        toast.error(
-          "Login failed. Please check your credentials and try again.",
-        );
+        toast.error("Login failed. Please check your credentials.");
       }
     } catch (error) {
-      // Handle backend errors
       if (error.response && error.response.data) {
         const backendErrors = error.response.data.errors || error.response.data;
-
-        // Display each error in a toast
         Object.entries(backendErrors).forEach(([field, message]) => {
           toast.error(message);
         });
       } else {
-        console.log("error", error.message);
-        // Handle unexpected errors
-        toast.error("An unexpected error occurred. Please try again.");
+        console.error("Login error:", error.message);
+        toast.error("An error occurred during login. Please try again.");
       }
     }
   };
+
   return (
     <div className="login-container">
       <ToastContainer
@@ -73,7 +68,7 @@ const LoginForm = () => {
       />
       <div className="login-form">
         <h2 className="text-center mb-4">Login </h2>
-        <form onSubmit={handleSubmit(onFormSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className="form-group">
             <label htmlForm="email">Email</label>
             <input

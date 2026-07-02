@@ -43,7 +43,7 @@ const Dashboard = () => {
         </div>
 
         <div className="db-profile">
-          <div className="db-avatar">MR</div>
+          <div className="db-avatar">MRB</div>
           {!collapsed && (
             <div className="db-profile-info">
               <span className="db-username">MRB</span>
@@ -84,7 +84,7 @@ const Dashboard = () => {
           {activeLink === "dashboard" && (
             <>
               <p className="db-welcome">
-                Welcome back, Muhammad! Here's what's happening.
+                Welcome back, Technical MRB! Here's what's happening.
               </p>
               <div className="db-cards">
                 {stats.map(({ label, count, icon, color }) => (
