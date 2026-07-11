@@ -1,15 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { APIEndpoint } from "../../constant/constant";
+import {useAuth} from "../../authContext/AuthContext";
 import { toast, ToastContainer } from "react-toastify";
+import api from "../../client/axiosClient";
 import "react-toastify/dist/ReactToastify.css";
 import "./login.css";
 
 const LoginForm = () => {
-  const [accessToken, setAccessToken] = useState(null);
-  const [user, setUser] = useState(null);
+  const { login, sessionMessage, clearSessionMessage } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const {
     register,
@@ -19,42 +18,25 @@ const LoginForm = () => {
   } = useForm();
   const navigate = useNavigate();
 
-  const onFormSubmit = async (data) => {
-    try {
-      const response = await axios.post(APIEndpoint.LOGIN_URL, data, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        withCredentials: true,
-      });
-      setIsLoading(true);
-      console.log("response", response.data);
-      if (response.status === 200) {
-        reset();
-        setIsLoading(false);
-        setAccessToken(response.data.accessToken);
-        setUser(response.data.user);
-        toast.success("Login successful!");
-        navigate("/dashboard");
-      } else {
-        toast.error(
-          "Login failed. Please check your credentials and try again.",
-        );
-      }
-    } catch (error) {
-      // Handle backend errors
-      if (error.response && error.response.data) {
-        const backendErrors = error.response.data.errors || error.response.data;
+  useEffect(() => {
+    toast.error(sessionMessage)
+    return () => clearSessionMessage(); // Clear session message on unmount
+  }, [clearSessionMessage]);
 
-        // Display each error in a toast
-        Object.entries(backendErrors).forEach(([field, message]) => {
-          toast.error(message);
-        });
-      } else {
-        console.log("error", error.message);
-        // Handle unexpected errors
-        toast.error("An unexpected error occurred. Please try again.");
-      }
+  const onFormSubmit = async (data) => {
+    setIsLoading(true);
+    try {
+      await login(data);
+      reset()
+      navigate("/dashboard");
+    
+    } catch (error) {
+      console.log("Error", error.response?.status, error.response?.data)
+      const backendData = error.response?.data
+      const message = backendData?.message || "An unexpected error occurred. Please try again."
+      toast.error(message)
+    } finally {
+      setIsLoading(false);
     }
   };
   return (

@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import "./Dashboard.css";
+import { useAuth } from "../../authContext/AuthContext";
 
 const Dashboard = () => {
+  const { user, logout } = useAuth();
   const [collapsed, setCollapsed] = useState(false);
   const [activeLink, setActiveLink] = useState("dashboard");
-  const navigate = useNavigate();
-
+  console.log("Authenticated User:", user);
   const stats = [
     { label: "Total Users", count: 1240, icon: "👥", color: "card-blue" },
     { label: "Total Blogs", count: 385, icon: "📝", color: "card-green" },
@@ -20,9 +20,9 @@ const Dashboard = () => {
     { key: "logout", icon: "🚪", label: "Logout" },
   ];
 
-  const handleNav = (key) => {
+  const handleNav = async(key) => {
     if (key === "logout") {
-      navigate("/");
+      await logout();
       return;
     }
     setActiveLink(key);
@@ -46,7 +46,7 @@ const Dashboard = () => {
           <div className="db-avatar">MR</div>
           {!collapsed && (
             <div className="db-profile-info">
-              <span className="db-username">MRB</span>
+              <span className="db-username">{user?.name}</span>
               <span className="db-role">Administrator</span>
             </div>
           )}
@@ -84,7 +84,7 @@ const Dashboard = () => {
           {activeLink === "dashboard" && (
             <>
               <p className="db-welcome">
-                Welcome back, Muhammad! Here's what's happening.
+                Welcome back, {user?.name}! Here's what's happening.
               </p>
               <div className="db-cards">
                 {stats.map(({ label, count, icon, color }) => (
