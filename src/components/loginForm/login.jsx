@@ -19,40 +19,39 @@ const LoginForm = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    return () => clearSessionMessage();
-  }, [sessionMessage]);
+    if (sessionMessage) {
+      toast.error(sessionMessage);
+      clearSessionMessage();
+    }
+  }, [sessionMessage, clearSessionMessage]);
 
   const onFormSubmit = async (data) => {
     setIsLoading(true);
 
     try {
-      const response = await login(data);
-
-      // Your backend returns 200 either way, so check the body itself
-
-      // to know whether login actually succeeded.
-
-      if (response?.success === false) {
-        toast.error(response.message || "Invalid email or password.");
-
-        return;
-      }
+      await login(data);
 
       reset();
 
       navigate("/dashboard");
     } catch (error) {
-      // Still keep this for genuine network/500 errors
-
-      toast.error(
-        error?.response?.data?.message ||
-          "Something went wrong. Please try again.",
+      console.log(
+        "[LoginForm] caught error:",
+        error.response?.status,
+        error.response?.data,
       );
+
+      const backendData = error.response?.data;
+
+      const message =
+        backendData?.message ||
+        "An error occurred during login. Please try again later.";
+
+      toast.error(message);
     } finally {
       setIsLoading(false);
     }
   };
-
   return (
     <div className="login-container">
       <ToastContainer

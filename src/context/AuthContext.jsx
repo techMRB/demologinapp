@@ -12,6 +12,7 @@ import api, {
   registerForceLogout,
 } from "../client/axiosClient";
 import { useIdleTimer } from "../utils/idleTimer";
+import { useNavigate } from "react-router-dom";
 const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -19,7 +20,7 @@ export const AuthProvider = ({ children }) => {
 
   const [sessionMessage, setSessionMessage] = useState(null);
   const isLoggingOut = useRef(false);
-
+  const navigate = useNavigate();
   const logout = useCallback(async (message) => {
     if (isLoggingOut.current) return;
     isLoggingOut.current = true;
@@ -31,6 +32,7 @@ export const AuthProvider = ({ children }) => {
     setAccessToken(null);
     setUser(null);
     if (message) setSessionMessage(message);
+    navigate("/");
     isLoggingOut.current = false;
   }, []);
 

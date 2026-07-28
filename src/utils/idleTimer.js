@@ -1,5 +1,5 @@
 import { useEffect, useRef, useCallback } from "react";
-const ONE_HOUR_IN_MS = 10 * 1000;
+const ONE_HOUR_IN_MS = 30 * 1000;
 const CHECK_EVERY_MS = 2 * 1000;
 const ACTIVITY_EVENTS = ["mousemove", "mousedown", "keydown", "scroll", "touchstart"];
 export const useIdleTimer = (onIdle, isEnabled) => {
