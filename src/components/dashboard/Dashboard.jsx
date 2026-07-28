@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Dashboard.css";
+import { useAuth } from "../../context/AuthContext";
 
 const Dashboard = () => {
+  const { user, logout } = useAuth();
   const [collapsed, setCollapsed] = useState(false);
   const [activeLink, setActiveLink] = useState("dashboard");
   const navigate = useNavigate();
@@ -20,8 +22,9 @@ const Dashboard = () => {
     { key: "logout", icon: "🚪", label: "Logout" },
   ];
 
-  const handleNav = (key) => {
+  const handleNav = async (key) => {
     if (key === "logout") {
+      await logout();
       navigate("/");
       return;
     }

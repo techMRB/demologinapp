@@ -1,16 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { APIEndpoint } from "../../constant/constant";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./login.css";
+import { useAuth } from "../../context/AuthContext";
+import { clear } from "@testing-library/user-event/dist/clear";
 
 const LoginForm = () => {
-  const [accessToken, setAccessToken] = useState(null);
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const { login, sessionMessage, clearSessionMessage } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
   const {
     register,
     handleSubmit,
@@ -19,36 +18,38 @@ const LoginForm = () => {
   } = useForm();
   const navigate = useNavigate();
 
-  const onSubmit = async (data) => {
+  useEffect(() => {
+    return () => clearSessionMessage();
+  }, [sessionMessage]);
+
+  const onFormSubmit = async (data) => {
+    setIsLoading(true);
+
     try {
-      const response = await axios.post(APIEndpoint.LOGIN_URL, data, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        withCredentials: true,
-      });
-      setLoading(true);
-      console.log("Login response:", response.data);
-      console.log("Login response:", response);
-      if (response.status === 200) {
-        reset();
-        setLoading(false);
-        setAccessToken(response.data.accessToken);
-        setUser(response.data.user);
-        navigate("/dashboard");
-      } else {
-        toast.error("Login failed. Please check your credentials.");
+      const response = await login(data);
+
+      // Your backend returns 200 either way, so check the body itself
+
+      // to know whether login actually succeeded.
+
+      if (response?.success === false) {
+        toast.error(response.message || "Invalid email or password.");
+
+        return;
       }
+
+      reset();
+
+      navigate("/dashboard");
     } catch (error) {
-      if (error.response && error.response.data) {
-        const backendErrors = error.response.data.errors || error.response.data;
-        Object.entries(backendErrors).forEach(([field, message]) => {
-          toast.error(message);
-        });
-      } else {
-        console.error("Login error:", error.message);
-        toast.error("An error occurred during login. Please try again.");
-      }
+      // Still keep this for genuine network/500 errors
+
+      toast.error(
+        error?.response?.data?.message ||
+          "Something went wrong. Please try again.",
+      );
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -68,7 +69,7 @@ const LoginForm = () => {
       />
       <div className="login-form">
         <h2 className="text-center mb-4">Login </h2>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onFormSubmit)}>
           <div className="form-group">
             <label htmlForm="email">Email</label>
             <input
