@@ -7,6 +7,7 @@ import Register from './components/registerForm/register';
 import EmailVerification from './components/emailVerification/EmailVerification';
 import Dashboard from './components/dashboard/Dashboard';
 import { AuthProvider } from './context/AuthContext';
+import ProtectedRoutes from './protectedRoutes/protectedRoutes';
 
 const App = () => {
   return (
@@ -16,7 +17,9 @@ const App = () => {
           <Route path="/" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/verify-email/:token" element={<EmailVerification />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route element={<ProtectedRoutes />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+          </Route>
         </Routes>
       </AuthProvider>
     </Router>
