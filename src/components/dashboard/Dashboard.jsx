@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./Dashboard.css";
-import { useAuth } from "../../authContext/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 
 const Dashboard = () => {
   const { user, logout } = useAuth();
@@ -20,9 +20,10 @@ const Dashboard = () => {
     { key: "logout", icon: "🚪", label: "Logout" },
   ];
 
-  const handleNav = async(key) => {
+  const handleNav = async (key) => {
     if (key === "logout") {
       await logout();
+      navigate("/");
       return;
     }
     setActiveLink(key);

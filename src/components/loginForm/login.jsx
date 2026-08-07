@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import {useAuth} from "../../authContext/AuthContext";
 import { toast, ToastContainer } from "react-toastify";
 import api from "../../client/axiosClient";
 import "react-toastify/dist/ReactToastify.css";
 import "./login.css";
+import { useAuth } from "../../context/AuthContext";
+import { clear } from "@testing-library/user-event/dist/clear";
 
 const LoginForm = () => {
   const { login, sessionMessage, clearSessionMessage } = useAuth();
@@ -19,27 +20,39 @@ const LoginForm = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    toast.error(sessionMessage)
-    return () => clearSessionMessage(); // Clear session message on unmount
-  }, [clearSessionMessage]);
+    if (sessionMessage) {
+      toast.error(sessionMessage);
+      clearSessionMessage();
+    }
+  }, [sessionMessage, clearSessionMessage]);
 
   const onFormSubmit = async (data) => {
     setIsLoading(true);
+
     try {
       await login(data);
-      reset()
+
+      reset();
+
       navigate("/dashboard");
-    
     } catch (error) {
-      console.log("Error", error.response?.status, error.response?.data)
-      const backendData = error.response?.data
-      const message = backendData?.message || "An unexpected error occurred. Please try again."
-      toast.error(message)
+      console.log(
+        "[LoginForm] caught error:",
+        error.response?.status,
+        error.response?.data,
+      );
+
+      const backendData = error.response?.data;
+
+      const message =
+        backendData?.message ||
+        "An error occurred during login. Please try again later.";
+
+      toast.error(message);
     } finally {
       setIsLoading(false);
     }
   };
-
   return (
     <div className="login-container">
       <ToastContainer
@@ -56,7 +69,7 @@ const LoginForm = () => {
       />
       <div className="login-form">
         <h2 className="text-center mb-4">Login </h2>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onFormSubmit)}>
           <div className="form-group">
             <label htmlForm="email">Email</label>
             <input
