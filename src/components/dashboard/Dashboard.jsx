@@ -43,7 +43,7 @@ const Dashboard = () => {
         </div>
 
         <div className="db-profile">
-          <div className="db-avatar">MR</div>
+          <div className="db-avatar">MRB</div>
           {!collapsed && (
             <div className="db-profile-info">
               <span className="db-username">{user?.name}</span>

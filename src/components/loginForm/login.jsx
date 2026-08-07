@@ -39,6 +39,7 @@ const LoginForm = () => {
       setIsLoading(false);
     }
   };
+
   return (
     <div className="login-container">
       <ToastContainer
@@ -55,7 +56,7 @@ const LoginForm = () => {
       />
       <div className="login-form">
         <h2 className="text-center mb-4">Login </h2>
-        <form onSubmit={handleSubmit(onFormSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className="form-group">
             <label htmlForm="email">Email</label>
             <input
