@@ -1,16 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { APIEndpoint } from "../../constant/constant";
+import {useAuth} from "../../authContext/AuthContext";
 import { toast, ToastContainer } from "react-toastify";
+import api from "../../client/axiosClient";
 import "react-toastify/dist/ReactToastify.css";
 import "./login.css";
 
 const LoginForm = () => {
-  const [accessToken, setAccessToken] = useState(null);
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const { login, sessionMessage, clearSessionMessage } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
   const {
     register,
     handleSubmit,
@@ -19,36 +18,25 @@ const LoginForm = () => {
   } = useForm();
   const navigate = useNavigate();
 
-  const onSubmit = async (data) => {
+  useEffect(() => {
+    toast.error(sessionMessage)
+    return () => clearSessionMessage(); // Clear session message on unmount
+  }, [clearSessionMessage]);
+
+  const onFormSubmit = async (data) => {
+    setIsLoading(true);
     try {
-      const response = await axios.post(APIEndpoint.LOGIN_URL, data, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        withCredentials: true,
-      });
-      setLoading(true);
-      console.log("Login response:", response.data);
-      console.log("Login response:", response);
-      if (response.status === 200) {
-        reset();
-        setLoading(false);
-        setAccessToken(response.data.accessToken);
-        setUser(response.data.user);
-        navigate("/dashboard");
-      } else {
-        toast.error("Login failed. Please check your credentials.");
-      }
+      await login(data);
+      reset()
+      navigate("/dashboard");
+    
     } catch (error) {
-      if (error.response && error.response.data) {
-        const backendErrors = error.response.data.errors || error.response.data;
-        Object.entries(backendErrors).forEach(([field, message]) => {
-          toast.error(message);
-        });
-      } else {
-        console.error("Login error:", error.message);
-        toast.error("An error occurred during login. Please try again.");
-      }
+      console.log("Error", error.response?.status, error.response?.data)
+      const backendData = error.response?.data
+      const message = backendData?.message || "An unexpected error occurred. Please try again."
+      toast.error(message)
+    } finally {
+      setIsLoading(false);
     }
   };
 
