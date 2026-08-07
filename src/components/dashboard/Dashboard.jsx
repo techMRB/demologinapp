@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import "./Dashboard.css";
 import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
   const { user, logout } = useAuth();
   const [collapsed, setCollapsed] = useState(false);
   const [activeLink, setActiveLink] = useState("dashboard");
+  const navigate = useNavigate();
   console.log("Authenticated User:", user);
   const stats = [
     { label: "Total Users", count: 1240, icon: "👥", color: "card-blue" },

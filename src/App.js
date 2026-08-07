@@ -1,7 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import "./App.css";
-import { AuthProvider } from "./authContext/AuthContext";
 
 import Login from './components/loginForm/login';
 import Register from './components/registerForm/register';
@@ -9,6 +8,8 @@ import EmailVerification from './components/emailVerification/EmailVerification'
 import Dashboard from './components/dashboard/Dashboard';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoutes from './protectedRoutes/protectedRoutes';
+import Unauthorized from './protectedRouteError/Unauthorized';
+import NotFound from './protectedRouteError/NotFound';
 
 const App = () => {
   return (
@@ -21,6 +22,8 @@ const App = () => {
           <Route element={<ProtectedRoutes />}>
             <Route path="/dashboard" element={<Dashboard />} />
           </Route>
+          <Route path="/unauthorized" element={<Unauthorized />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </AuthProvider>
     </Router>

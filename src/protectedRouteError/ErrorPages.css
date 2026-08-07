@@ -1,0 +1,100 @@
+.error-container {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f8f9fa;
+  padding: 1rem;
+}
+
+.error-card {
+  background: #ffffff;
+  padding: 2.5rem 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+}
+
+.error-icon {
+  font-size: 3.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.error-code {
+  font-size: 4rem;
+  font-weight: 800;
+  color: #007bff;
+  margin: 0 0 0.25rem;
+  line-height: 1;
+}
+
+.error-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #343a40;
+  margin: 0 0 0.75rem;
+}
+
+.error-message {
+  color: #6c757d;
+  font-size: 0.97rem;
+  margin-bottom: 1.8rem;
+  line-height: 1.5;
+}
+
+.error-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.submit-button {
+  background-color: #007bff;
+  border: none;
+  padding: 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 6px;
+  color: #ffffff;
+  width: 100%;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.submit-button:hover {
+  background-color: #0056b3;
+}
+
+.outline-button {
+  background-color: transparent;
+  border: 2px solid #007bff;
+  padding: 0.72rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 6px;
+  color: #007bff;
+  width: 100%;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.outline-button:hover {
+  background-color: #007bff;
+  color: #ffffff;
+}
+
+@media (max-width: 480px) {
+  .error-card {
+    padding: 2rem 1.25rem;
+  }
+
+  .error-code {
+    font-size: 3rem;
+  }
+
+  .error-title {
+    font-size: 1.2rem;
+  }
+}
