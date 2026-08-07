@@ -1,6 +1,7 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import './App.css';
+import React from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import "./App.css";
+import { AuthProvider } from "./authContext/AuthContext";
 
 import Login from './components/loginForm/login';
 import Register from './components/registerForm/register';
@@ -23,6 +24,6 @@ const App = () => {
         </Routes>
       </AuthProvider>
     </Router>
-  )
-}
+  );
+};
 export default App;
