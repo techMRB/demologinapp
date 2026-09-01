@@ -59,6 +59,7 @@ export const AuthProvider = ({ children }) => {
     const restoreSession = async () => {
       try {
         const response = await api.post("/auth/refresh");
+        console.log("[AuthContext] Restored session:", response.data);
         setAccessToken(response.data.accessToken);
         setUser(response.data.user);
       } catch (err) {
@@ -75,6 +76,11 @@ export const AuthProvider = ({ children }) => {
     logout("You were logged out after an hour of inactivity.");
   }, [logout]);
   useIdleTimer(handleIdleLogout, Boolean(user));
+
+  const hasRole = useCallback(
+    (...roles) => Boolean(user) && roles.includes(user.role),
+    [user]
+  );
   const contextValue = {
     user,
     isAuthenticated: Boolean(user),
@@ -83,6 +89,7 @@ export const AuthProvider = ({ children }) => {
     clearSessionMessage: () => setSessionMessage(null),
     login,
     logout,
+    hasRole,
   };
   return (
     <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
