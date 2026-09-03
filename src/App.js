@@ -29,11 +29,7 @@ const App = () => {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route
                 path="/users"
-                element={
-                  <CanAccess roles={["admin"]} variant={1}>
-                    <UserList />
-                  </CanAccess>
-                }
+                element={ <UserList/> }
               />
               <Route path="/settings" element={<Settings />} />
             </Route>
