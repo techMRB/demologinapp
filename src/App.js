@@ -12,9 +12,7 @@ import Settings from "./components/settings/Settings";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoutes from "./protectedRoutes/protectedRoutes";
 import CanAccess from "./components/CanAccess";
-import Unauthorized from "./protectedRouteError/Unauthorized";
-import Forbidden from "./protectedRouteError/Forbidden";
-import NotFound from "./protectedRouteError/NotFound";
+import AccessError from "./protectedRouteError/AccessError";
 
 const App = () => {
   return (
@@ -30,7 +28,7 @@ const App = () => {
               <Route
                 path="/users"
                 element={
-                  <CanAccess roles={["admin"]} variant={1}>
+                  <CanAccess roles={["admin"]}>
                     <UserList />
                   </CanAccess>
                 }
@@ -38,9 +36,8 @@ const App = () => {
               <Route path="/settings" element={<Settings />} />
             </Route>
           </Route>
-          <Route path="/unauthorized" element={<Unauthorized />} />
-          <Route path="/forbidden"    element={<Forbidden />} />
-          <Route path="*"             element={<NotFound />} />
+          <Route path="/unauthorized" element={<AccessError />} />
+          <Route path="*"             element={<AccessError type={404} />} />
         </Routes>
       </AuthProvider>
     </Router>

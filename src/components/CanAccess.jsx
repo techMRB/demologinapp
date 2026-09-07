@@ -5,7 +5,7 @@ const CanAccess = ({ roles, children }) => {
     const { hasRole } = useAuth();
     return hasRole(...roles)
         ? children
-        : <Navigate to="/forbidden" state={{ type: 403 }} replace />;
+        : <Navigate to="/unauthorized" state={{ type: 403 }} replace />;
 };
 
 export default CanAccess;
