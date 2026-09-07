@@ -7,7 +7,7 @@ const navLinks = [
   { key: "dashboard", icon: "🏠", label: "Dashboard", path: "/dashboard" },
   { key: "users",     icon: "👥", label: "Users",     path: "/users" },
   { key: "settings",  icon: "⚙️", label: "Settings",  path: "/settings" },
-  { key: "logout",    icon: "🚪", label: "Logout",    path: null },
+  { key: "logout",    icon: "🚪", label: "Logout" },
 ];
 
 const DashboardLayout = () => {

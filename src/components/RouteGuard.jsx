@@ -5,7 +5,7 @@ const RouteGuard = ({ children, roles }) => {
   const { isAuthenticated, isLoading, hasRole } = useAuth();
 
   if(isLoading) return null;
-  if(!isAuthenticated) return <Navigate to="/login" replace />;
+  if(!isAuthenticated) return <Navigate to="/" replace />;
   if(roles && !hasRole(...roles)) return <Navigate to="/unauthorized" replace />;
 
     return children;

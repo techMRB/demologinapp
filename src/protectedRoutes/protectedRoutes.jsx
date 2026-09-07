@@ -14,7 +14,7 @@ const ProtectedRoutes = () => {
 
   if (!isAuthenticated) {
     console.log("User is not authenticated. Redirecting to /unauthorized.", isAuthenticated);
-    return <Navigate to="/unauthorized" replace />;
+    return <Navigate to="/" replace />;
   }
 
   return <Outlet />;
