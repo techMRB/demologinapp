@@ -28,16 +28,14 @@ const App = () => {
               <Route
                 path="/users"
                 element={
-                  <CanAccess roles={["admin"]}>
-                    <UserList />
-                  </CanAccess>
+                  <UserList />
                 }
               />
               <Route path="/settings" element={<Settings />} />
             </Route>
           </Route>
           <Route path="/unauthorized" element={<AccessError />} />
-          <Route path="*"             element={<AccessError type={404} />} />
+          <Route path="*" element={<AccessError type={404} />} />
         </Routes>
       </AuthProvider>
     </Router>
