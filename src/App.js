@@ -27,9 +27,9 @@ const App = () => {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route
                 path="/users"
-                element={
+                element={ <CanAccess roles={["admin"]}>
                   <UserList />
-                }
+                </CanAccess> }
               />
               <Route path="/settings" element={<Settings />} />
             </Route>

@@ -77,6 +77,7 @@ export const AuthProvider = ({ children }) => {
   }, [logout]);
   useIdleTimer(handleIdleLogout, Boolean(user));
 
+  const hasRole = useCallback((...roles) => Boolean(user) && roles.includes(user.userRole), [user]);
 
   const contextValue = {
     user,
@@ -86,6 +87,7 @@ export const AuthProvider = ({ children }) => {
     clearSessionMessage: () => setSessionMessage(null),
     login,
     logout,
+    hasRole,
   };
   return (
     <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
