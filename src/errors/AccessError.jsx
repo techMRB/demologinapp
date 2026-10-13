@@ -1,13 +1,14 @@
 import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import "./ErrorPages.css";
+import "./AccessError.css";
 
 const ERROR_CONFIGS = {
   401: {
     code: "401",
     icon: "🔒",
     title: "Unauthorized",
-    message: "You are not authenticated to access this resource. Please log in to continue.",
+    message:
+      "You are not authenticated to access this resource. Please log in to continue.",
     codeClass: "code-401",
     reasons: [
       "You are not logged in or your session has expired",
@@ -80,7 +81,9 @@ const AccessError = ({ type = 403 }) => {
         <div className="ae-reasons">
           <p className="ae-reasons-title">This may happen because:</p>
           <ul className="ae-reasons-list">
-            {config.reasons.map((r) => <li key={r}>{r}</li>)}
+            {config.reasons.map((r) => (
+              <li key={r}>{r}</li>
+            ))}
           </ul>
         </div>
 

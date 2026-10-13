@@ -13,28 +13,32 @@ import api, {
 } from "../client/axiosClient";
 import { useIdleTimer } from "../utils/idleTimer";
 import { useNavigate } from "react-router-dom";
+
 const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-
   const [sessionMessage, setSessionMessage] = useState(null);
   const isLoggingOut = useRef(false);
   const navigate = useNavigate();
-  const logout = useCallback(async (message) => {
-    if (isLoggingOut.current) return;
-    isLoggingOut.current = true;
-    try {
-      await api.post("/auth/logout"); // tells backend to invalidate refresh token
-    } catch (err) {
-      // ignored — we clear the local session regardless
-    }
-    setAccessToken(null);
-    setUser(null);
-    if (message) setSessionMessage(message);
-    navigate("/");
-    isLoggingOut.current = false;
-  }, []);
+
+  const logout = useCallback(
+    async (message) => {
+      if (isLoggingOut.current) return;
+      isLoggingOut.current = true;
+      try {
+        await api.post("/auth/logout"); // tells backend to invalidate refresh token
+      } catch (err) {
+        // ignored — we clear the local session regardless
+      }
+      setAccessToken(null);
+      setUser(null);
+      if (message) setSessionMessage(message);
+      navigate("/");
+      isLoggingOut.current = false;
+    },
+    [navigate],
+  );
 
   // axiosClient.js can't use React state directly, so we hand it this
 
@@ -77,7 +81,11 @@ export const AuthProvider = ({ children }) => {
   }, [logout]);
   useIdleTimer(handleIdleLogout, Boolean(user));
 
-  const hasRole = useCallback((...roles) => Boolean(user) && roles.includes(user.userRole), [user]);
+  const hasPermission = useCallback(
+    (...perms) =>
+      Boolean(user) && perms.some((p) => user.permissions?.includes(p)),
+    [user],
+  );
 
   const contextValue = {
     user,
@@ -87,7 +95,7 @@ export const AuthProvider = ({ children }) => {
     clearSessionMessage: () => setSessionMessage(null),
     login,
     logout,
-    hasRole,
+    hasPermission,
   };
   return (
     <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
