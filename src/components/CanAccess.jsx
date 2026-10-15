@@ -1,8 +1,8 @@
-import { Navigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 const CanAccess = ({ permissions, children }) => {
   const { hasPermission } = useAuth();
+
   return hasPermission(...permissions) ? children : null;
 };
 

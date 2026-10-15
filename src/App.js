@@ -1,24 +1,24 @@
 import React from "react";
-import {
-  BrowserRouter as Router,
-  Route,
-  Routes,
-  BrowserRouter,
-} from "react-router-dom";
+import { Route, Routes, BrowserRouter } from "react-router-dom";
 import "./App.css";
 
 import DashboardLayout from "./components/dashboard/DashboardLayout";
 import { AuthProvider } from "./context/AuthContext";
+import ProtectedRoutes from "./protectedRoutes/protectedRoutes";
 import RouteGuard from "./components/RouteGuard";
+
 import { publicRoutes, protectedRoutes } from "./routes/routeConfig";
 
 function AppRoutes() {
   return (
     <Routes>
-      {publicRoutes.map((path, element) => (
+      {/* Public routes */}
+      {publicRoutes.map(({ path, element }) => (
         <Route key={path} path={path} element={element} />
       ))}
-      <Route element={<protectedRoutes />}>
+
+      {/* Authentication-protected routes */}
+      <Route element={<ProtectedRoutes />}>
         <Route element={<DashboardLayout />}>
           {protectedRoutes.map(({ path, element, permissions }) => (
             <Route
@@ -38,6 +38,7 @@ function AppRoutes() {
     </Routes>
   );
 }
+
 const App = () => {
   return (
     <BrowserRouter>
