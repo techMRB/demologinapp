@@ -1,0 +1,163 @@
+/* ── Modal width + fixed height so expanding permissions doesn't grow the form ── */
+.rl-modal-wide {
+  max-width: 560px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.rl-modal-wide form {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.rl-modal-scroll {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+  padding-right: 2px;
+}
+
+/* ── Permission chips in table cell ── */
+.rl-perm-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+/* ── Permissions accordion container — fixed height, internal scroll only ── */
+.rl-perm-list {
+  border: 1px solid #dde3ec;
+  border-radius: 8px;
+  height: 220px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+/* ── Module group ── */
+.rl-perm-group {
+  border-bottom: 1px solid #f0f3f7;
+}
+
+.rl-perm-group:last-child {
+  border-bottom: none;
+}
+
+/* ── Module header row ── */
+.rl-perm-group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.55rem 0.75rem;
+  background: #f7f9fc;
+  gap: 0.5rem;
+}
+
+.rl-perm-group-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  flex: 1;
+  text-align: left;
+}
+
+.rl-chevron {
+  font-size: 0.8rem;
+  color: #007bff;
+  width: 12px;
+  display: inline-block;
+}
+
+.rl-mod-name {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: capitalize;
+  color: #1e2a3a;
+}
+
+.rl-mod-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 20px;
+  background: #eef3ff;
+  color: #3b5bdb;
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+/* ── Select All label ── */
+.rl-select-all {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #5a6a7a;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.rl-select-all input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+  accent-color: #007bff;
+  cursor: pointer;
+}
+
+/* ── Permission rows ── */
+.rl-perm-rows {
+  display: flex;
+  flex-direction: column;
+  padding: 0.25rem 0.75rem 0.4rem 1.6rem;
+  gap: 0.05rem;
+  background: #fff;
+}
+
+.rl-perm-check {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3rem 0.3rem;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+
+.rl-perm-check:hover {
+  background: #f0f6ff;
+}
+
+.rl-perm-check input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+  accent-color: #007bff;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.rl-perm-label {
+  font-size: 0.86rem;
+  color: #2c3e50;
+  flex: 1;
+}
+
+.rl-perm-key {
+  font-size: 0.71rem;
+  color: #a0b0c0;
+  font-family: monospace;
+  margin-left: auto;
+}

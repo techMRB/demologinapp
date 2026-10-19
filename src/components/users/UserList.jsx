@@ -2,12 +2,14 @@ import React, { useState, useMemo, useEffect, useCallback } from "react";
 import "./UserList.css";
 import api from "../../client/axiosClient";
 import { APIEndpoint } from "../../constant/constant";
+import CanAccess from "../CanAccess";
+import { useAuth } from "../../context/AuthContext";
 
 const EMPTY_FORM = {
   userName: "",
   userEmail: "",
   userContact: "",
-  userRole: "user",
+  userRole: "",
 };
 
 const initials = (name = "") =>
@@ -27,7 +29,10 @@ const COLUMNS = [
 ];
 
 export default function UserList() {
+  const { hasPermission } = useAuth();
+  const canReadAll = hasPermission("user:read");
   const [users, setUsers] = useState([]);
+  const [roles, setRoles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [search, setSearch] = useState("");
@@ -43,12 +48,31 @@ export default function UserList() {
     setError(null);
     try {
       const res = await api.get(APIEndpoint.GET_ALL_USERS);
-      const data = res.data;
-      setUsers(Array.isArray(data) ? data : (data?.users ?? []));
+      // toSafeJSON shape: { id, name, email, userContact, role, isVerified }
+      const raw = res.data?.users ?? [];
+      setUsers(
+        raw.map((u) => ({
+          _id: u.id,
+          userName: u.name,
+          userEmail: u.email,
+          userContact: u.contact ?? "",
+          userRole: u.role ?? "",
+          isVerified: u.isVerified ?? false,
+        })),
+      );
     } catch (err) {
       setError(err.response?.data?.message ?? "Failed to load users.");
     } finally {
       setLoading(false);
+    }
+  }, []);
+
+  const fetchRoles = useCallback(async () => {
+    try {
+      const res = await api.get(APIEndpoint.GET_ALL_ROLES);
+      setRoles((res.data?.roles ?? []).map((r) => r.name));
+    } catch {
+      setRoles([]);
     }
   }, []);
 
@@ -94,17 +118,19 @@ export default function UserList() {
   };
 
   /* ── Modal helpers ── */
-  const openAdd = () => {
+  const openAdd = async () => {
     setForm(EMPTY_FORM);
+    await fetchRoles();
     setModal({ type: "add" });
   };
-  const openEdit = (u) => {
+  const openEdit = async (u) => {
     setForm({
       userName: u.userName,
       userEmail: u.userEmail,
       userContact: u.userContact,
       userRole: u.userRole,
     });
+    await fetchRoles();
     setModal({ type: "edit", user: u });
   };
   const openView = (u) => setModal({ type: "view", user: u });
@@ -152,14 +178,14 @@ export default function UserList() {
     <>
       <div className="ul-header">
         <h2 className="ul-title">
-          All Users{" "}
-          <span style={{ color: "#a0b0c0", fontWeight: 400 }}>
-            ({filtered.length})
-          </span>
+          {canReadAll ? "All Users" : "My Profile"}{" "}
+          <span style={{ color: "#a0b0c0", fontWeight: 400 }}>({filtered.length})</span>
         </h2>
-        <button className="ul-add-btn" onClick={openAdd}>
-          ＋ Add New User
-        </button>
+        <CanAccess permissions={["user:create"]}>
+          <button className="ul-add-btn" onClick={openAdd}>
+            ＋ Add New User
+          </button>
+        </CanAccess>
       </div>
 
       {error && (
@@ -193,36 +219,37 @@ export default function UserList() {
       )}
 
       <div className="ul-card">
-        {/* Toolbar */}
-        <div className="ul-toolbar">
-          <div className="ul-search-wrap">
-            <span className="ul-search-icon">🔍</span>
-            <input
-              className="ul-search"
-              placeholder="Search users…"
-              value={search}
-              onChange={(e) => {
-                setSearch(e.target.value);
-                setPage(1);
-              }}
-            />
+        {canReadAll && (
+          <div className="ul-toolbar">
+            <div className="ul-search-wrap">
+              <span className="ul-search-icon">🔍</span>
+              <input
+                className="ul-search"
+                placeholder="Search users…"
+                value={search}
+                onChange={(e) => {
+                  setSearch(e.target.value);
+                  setPage(1);
+                }}
+              />
+            </div>
+            <div className="ul-per-page">
+              Show
+              <select
+                value={perPage}
+                onChange={(e) => {
+                  setPerPage(Number(e.target.value));
+                  setPage(1);
+                }}
+              >
+                {[5, 10, 25].map((n) => (
+                  <option key={n}>{n}</option>
+                ))}
+              </select>
+              entries
+            </div>
           </div>
-          <div className="ul-per-page">
-            Show
-            <select
-              value={perPage}
-              onChange={(e) => {
-                setPerPage(Number(e.target.value));
-                setPage(1);
-              }}
-            >
-              {[5, 10, 25].map((n) => (
-                <option key={n}>{n}</option>
-              ))}
-            </select>
-            entries
-          </div>
-        </div>
+        )}
 
         {/* Table */}
         <div className="ul-table-wrap">
@@ -269,12 +296,7 @@ export default function UserList() {
                       </div>
                     </td>
                     <td>
-                      {" "}
-                      <span className="ul-role">
-                        {typeof u.userRole === "object"
-                          ? (u.userRole?.name ?? "—")
-                          : (u.userRole ?? "—")}
-                      </span>
+                      <span className="ul-role">{u.userRole || "—"}</span>
                     </td>
                     <td>
                       <span
@@ -286,24 +308,30 @@ export default function UserList() {
                     <td>{u.userContact ?? "—"}</td>
                     <td>
                       <div className="ul-actions">
-                        <button
-                          className="ul-btn view"
-                          onClick={() => openView(u)}
-                        >
-                          👁 View
-                        </button>
-                        <button
-                          className="ul-btn edit"
-                          onClick={() => openEdit(u)}
-                        >
-                          ✏️ Edit
-                        </button>
-                        <button
-                          className="ul-btn delete"
-                          onClick={() => openDel(u)}
-                        >
-                          🗑 Delete
-                        </button>
+                        <CanAccess permissions={["user:read"]}>
+                          <button
+                            className="ul-btn view"
+                            onClick={() => openView(u)}
+                          >
+                            👁 View
+                          </button>
+                        </CanAccess>
+                        <CanAccess permissions={["user:update"]}>
+                          <button
+                            className="ul-btn edit"
+                            onClick={() => openEdit(u)}
+                          >
+                            ✏️ Edit
+                          </button>
+                        </CanAccess>
+                        <CanAccess permissions={["user:delete"]}>
+                          <button
+                            className="ul-btn delete"
+                            onClick={() => openDel(u)}
+                          >
+                            🗑 Delete
+                          </button>
+                        </CanAccess>
                       </div>
                     </td>
                   </tr>
@@ -313,37 +341,38 @@ export default function UserList() {
           </table>
         </div>
 
-        {/* Pagination */}
-        <div className="ul-footer">
-          <span className="ul-info">
-            Showing {start}–{end} of {filtered.length} entries
-          </span>
-          <div className="ul-pagination">
-            <button
-              className="ul-page-btn"
-              disabled={safePage === 1}
-              onClick={() => setPage(safePage - 1)}
-            >
-              ‹ Prev
-            </button>
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+        {canReadAll && (
+          <div className="ul-footer">
+            <span className="ul-info">
+              Showing {start}–{end} of {filtered.length} entries
+            </span>
+            <div className="ul-pagination">
               <button
-                key={p}
-                className={`ul-page-btn ${p === safePage ? "active" : ""}`}
-                onClick={() => setPage(p)}
+                className="ul-page-btn"
+                disabled={safePage === 1}
+                onClick={() => setPage(safePage - 1)}
               >
-                {p}
+                ‹ Prev
               </button>
-            ))}
-            <button
-              className="ul-page-btn"
-              disabled={safePage === totalPages}
-              onClick={() => setPage(safePage + 1)}
-            >
-              Next ›
-            </button>
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                <button
+                  key={p}
+                  className={`ul-page-btn ${p === safePage ? "active" : ""}`}
+                  onClick={() => setPage(p)}
+                >
+                  {p}
+                </button>
+              ))}
+              <button
+                className="ul-page-btn"
+                disabled={safePage === totalPages}
+                onClick={() => setPage(safePage + 1)}
+              >
+                Next ›
+              </button>
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* ── Modals ── */}
@@ -362,7 +391,7 @@ export default function UserList() {
                   ["Name", modal.user.userName],
                   ["Email", modal.user.userEmail],
                   ["Contact", modal.user.userContact ?? "—"],
-                  ["Role", modal.user.userRole],
+                  ["Role", modal.user.userRole || "—"],
                   ["Status", modal.user.isVerified ? "Verified" : "Unverified"],
                 ].map(([label, value]) => (
                   <div className="ul-view-row" key={label}>
@@ -407,7 +436,8 @@ export default function UserList() {
                       setForm({ ...form, userRole: e.target.value })
                     }
                   >
-                    {["admin", "user", "editor"].map((r) => (
+                    <option value="">Select role…</option>
+                    {roles.map((r) => (
                       <option key={r} value={r}>
                         {r.charAt(0).toUpperCase() + r.slice(1)}
                       </option>

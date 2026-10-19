@@ -1,0 +1,133 @@
+/* ── Accordion ── */
+.pl-accordion {
+  padding: 0.5rem 0;
+}
+
+.pl-group {
+  border-bottom: 1px solid #eef1f5;
+}
+
+.pl-group:last-child {
+  border-bottom: none;
+}
+
+.pl-group-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1.2rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s;
+  gap: 1rem;
+}
+
+.pl-group-header:hover {
+  background: #f7f9fc;
+}
+
+.pl-group-left {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-shrink: 0;
+}
+
+.pl-chevron {
+  font-size: 0.85rem;
+  color: #007bff;
+  width: 14px;
+  display: inline-block;
+}
+
+.pl-group-name {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #1e2a3a;
+  text-transform: capitalize;
+}
+
+.pl-group-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 20px;
+  background: #eef3ff;
+  color: #3b5bdb;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.pl-group-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  justify-content: flex-end;
+}
+
+.pl-group-body {
+  border-top: 1px solid #f0f3f7;
+  background: #fafbfd;
+  overflow-x: auto;
+}
+
+.pl-group-body .ul-table thead tr {
+  background: #f0f3f7;
+}
+
+/* ── Action checkbox cards (Add modal) ── */
+.pl-action-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+}
+
+.pl-action-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  padding: 0.65rem 0.8rem;
+  border: 1.5px solid #dde3ec;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.18s, background 0.18s;
+  background: #fff;
+}
+
+.pl-action-card.checked {
+  border-color: #007bff;
+  background: #f0f6ff;
+}
+
+.pl-action-card input[type="checkbox"] {
+  margin-top: 2px;
+  width: 15px;
+  height: 15px;
+  accent-color: #007bff;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.pl-action-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.18rem;
+}
+
+.pl-action-label {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #1e2a3a;
+}
+
+.pl-action-key {
+  font-size: 0.72rem;
+  color: #8a99aa;
+  font-family: monospace;
+}

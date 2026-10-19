@@ -4,10 +4,12 @@ import { useAuth } from "../../context/AuthContext";
 import { useNavigate, useLocation, Outlet } from "react-router-dom";
 
 const navLinks = [
-  { key: "dashboard", icon: "🏠", label: "Dashboard", path: "/dashboard" },
-  { key: "users",     icon: "👥", label: "Users",     path: "/users" },
-  { key: "settings",  icon: "⚙️", label: "Settings",  path: "/settings" },
-  { key: "logout",    icon: "🚪", label: "Logout" },
+  { key: "dashboard",   icon: "🏠", label: "Dashboard",   path: "/dashboard" },
+  { key: "users",       icon: "👥", label: "Users",       path: "/users" },
+  { key: "roles",       icon: "🎭", label: "Roles",       path: "/roles" },
+  { key: "permissions", icon: "🔑", label: "Permissions", path: "/permissions" },
+  { key: "settings",    icon: "⚙️", label: "Settings",    path: "/settings" },
+  { key: "logout",      icon: "🚪", label: "Logout" },
 ];
 
 const DashboardLayout = () => {
@@ -22,8 +24,11 @@ const DashboardLayout = () => {
   const pageTitle =
     navLinks.find((l) => l.key === activeKey)?.label ?? "Dashboard";
 
-  const userInitials = (user?.userName ?? "?")
+  const userInitials = (user?.name ?? user?.userName ?? "?")
     .split(" ").map((w) => w[0]).join("").toUpperCase().slice(0, 2);
+
+  const displayName = user?.name ?? user?.userName ?? "User";
+  const displayRole = user?.role ?? user?.userRole ?? "—";
 
   const handleNav = async (link) => {
     if (link.key === "logout") {
@@ -49,8 +54,8 @@ const DashboardLayout = () => {
           <div className="db-avatar">{userInitials}</div>
           {!collapsed && (
             <div className="db-profile-info">
-              <span className="db-username">{user?.userName ?? "User"}</span>
-              <span className="db-role">{user?.userRole ?? "—"}</span>
+              <span className="db-username">{displayName}</span>
+              <span className="db-role">{displayRole}</span>
             </div>
           )}
         </div>

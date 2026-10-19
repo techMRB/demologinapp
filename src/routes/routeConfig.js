@@ -3,6 +3,8 @@ import UserList from "../components/users/UserList";
 import Settings from "../components/settings/Settings";
 import Login from "../components/loginForm/login";
 import AccessError from "../errors/AccessError";
+import PermissionList from "../components/permissions/PermissionList";
+import RoleList from "../components/roles/RoleList";
 
 export const publicRoutes = [
   { path: "/", element: <Login /> },
@@ -12,10 +14,8 @@ export const publicRoutes = [
 
 export const protectedRoutes = [
   { path: "/dashboard", element: <Dashboard /> },
-  {
-    path: "/users",
-    element: <UserList />,
-    permissions: ["user:read"],
-  },
+  { path: "/users", element: <UserList />, permissions: ["user:read"] },
+  { path: "/roles", element: <RoleList />, permissions: ["role:read"] },
+  { path: "/permissions", element: <PermissionList />, permissions: ["permission:read"] },
   { path: "/settings", element: <Settings /> },
 ];
