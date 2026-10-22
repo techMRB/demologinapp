@@ -34,18 +34,23 @@ export default function RoleList() {
     setLoading(true);
     setError(null);
     try {
-      const [rolesRes, permsRes] = await Promise.all([
-        api.get(APIEndpoint.GET_ALL_ROLES),
-        api.get(APIEndpoint.GET_ALL_PERMISSIONS),
-      ]);
+      const rolesRes = await api.get(APIEndpoint.GET_ALL_ROLES);
       // GET_ALL_ROLES → { roles: [{ _id, name, description, permissions: [...objects], isSystem }] }
       setRoles(rolesRes.data?.roles ?? []);
-      // GET_ALL_PERMISSIONS → { permissions: [{ _id, key, label, module, description, isSystem }] }
-      setAllPermissions(permsRes.data?.permissions ?? []);
     } catch (err) {
       setError(err.response?.data?.message ?? "Failed to load roles.");
     } finally {
       setLoading(false);
+    }
+  }, []);
+
+  const fetchPermissions = useCallback(async () => {
+    try {
+      const permsRes = await api.get(APIEndpoint.GET_ALL_PERMISSIONS);
+      // GET_ALL_PERMISSIONS → { permissions: [{ _id, key, label, module, description, isSystem }] }
+      setAllPermissions(permsRes.data?.permissions ?? []);
+    } catch {
+      setAllPermissions([]);
     }
   }, []);
 
@@ -82,16 +87,18 @@ export default function RoleList() {
   const getPermIds = (role) =>
     (role.permissions ?? []).map((p) => (typeof p === "object" ? p._id : p));
 
-  const openAdd = () => {
+  const openAdd = async () => {
     reset({ name: "", description: "" });
     setSelectedPerms([]);
     setExpandedMods({});
+    await fetchPermissions();
     setModal({ type: "add" });
   };
-  const openEdit = (r) => {
+  const openEdit = async (r) => {
     reset({ name: r.name, description: r.description });
     setSelectedPerms(getPermIds(r));
     setExpandedMods({});
+    await fetchPermissions();
     setModal({ type: "edit", item: r });
   };
   const openView = (r) => setModal({ type: "view", item: r });
